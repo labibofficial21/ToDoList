@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>To Do List</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<h2>Apa tugasmu hari ini, Labib?</h2>
+
+		<div class="utama">
+			<label for="tugas">Tugas</label>
+			<input
+				type="text"
+				name="tugas"
+				id="task"
+				placeholder="Apa yang akan kamu kerjakan?" />
+
+			<label for="tanggal">Tanggal</label>
+			<input type="date" name="tanggal" id="tanggal" />
+
+			<label for="taskList">Jenis tugas:</label>
+			<select name="taskList" id="taskList">
+				<option value="Rutin">Rutin</option>
+				<option value="Non Rutin">Non Rutin</option>
+				<option value="Selesai">Selesai</option>
+			</select>
+
+			<button type="submit" id="tambahTugas">Tambah Tugas Baru</button>
+		</div>
+
+		<div class="daftarTugas">
+			<ul class="daftar"></ul>
+		</div>
+	</body>
+
+	<script src="script.js"></script>
+</html>
