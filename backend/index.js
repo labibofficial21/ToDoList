@@ -65,8 +65,33 @@ app.post('/api/task', (req, res) => {
             console.error('Error inserting task: ', error);
             return res.status(500).json({ error: 'Failed to insert task into db' })
         } else {
-            console.log('Task inserted successfully!');
-            return res.status(200).json({ message: 'Task inserted successfully!' })
+            console.log(results)
+            const newTaskId = results.insertId
+            console.log('Task inserted successfully with ID: ', newTaskId);
+            return res.status(200).json({
+                message: 'Task inserted successfully!',
+                id: newTaskId
+            })
+        }
+    })
+})
+
+// API Endpoint untuk menghapus data dari db    
+app.delete('/api/task/:id', (req, res) => {
+    const taskId = req.params.id;
+
+    const deleteQuery = `DELETE FROM task WHERE id = ?`;
+    connection.query(deleteQuery, [taskId], (error, results, fields) => {
+        if (error) {
+            console.error('Error deleting task: ', error);
+            return res.status(500).json({ error: 'Failed to delete task from db' })
+        } else {
+            if (results.affectedRows > 0) {
+                console.log('Task deleted successfully!')
+                return res.status(200).json({ message: 'Task deleted successfully!' })
+            } else {
+                return res.status(404).json({ error: 'Task not found!' })
+            }
         }
     })
 })
