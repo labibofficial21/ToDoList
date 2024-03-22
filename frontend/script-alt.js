@@ -1,67 +1,59 @@
+// Script cadangan-versi pertama
+
 let tombol = document.getElementById("tambahTugas")
 let daftar = document.querySelector(".daftar")
 
-// memuat data dari server ke frontend
-window.addEventListener('load', loadDataFromServer)
+let newTaskId;
 
-function loadDataFromServer() {
+// memuat data dari server ke frontend
+window.addEventListener('load', () => {
     fetch('http://localhost:3000/api/task')
         .then(response => response.json())
         .then(data => {
-            // console.log(data);
+            console.log(data);
 
             for (let i = 0; i < data.length; i++) {
                 const task = data[i]
-                addToTaskList(task)
-                // console.log(task)
+
+                const liTugas = document.createElement("li");
+                liTugas.textContent = task.task_name;
+
+                const liTanggal = document.createElement("p");
+                liTanggal.textContent = "Tanggal " + task.task_date
+
+                const liTask = document.createElement("p");
+                liTask.textContent = "Jenis Tugas = " + task.task_type
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Hapus'
+
+                deleteButton.addEventListener('click', function () {
+                    //simpan referensi elemen yang akan dihapus
+                    const elementsToRemove = [liTugas, liTanggal, liTask, deleteButton];
+
+                    //kirim request delete ke db    
+                    fetch(`http://localhost:3000/api/task/${task.id
+                        }`, { method: 'DELETE' })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert(data.message);
+
+                            elementsToRemove.forEach(element => element.remove())
+                        })
+                        .catch(error => {
+                            // console.error('Error: ', error)
+                            alert('Terjadi kesalahan saat menghapus data!')
+                        })
+                })
+
+                daftar.appendChild(liTugas)
+                daftar.appendChild(liTanggal)
+                daftar.appendChild(liTask)
+                daftar.appendChild(deleteButton)
             }
         })
         .catch(error => console.error('Error fetching data: ', error))
-}
-
-function addToTaskList(task) {
-    const taskId = task.id
-
-    const liTugas = document.createElement("li");
-    liTugas.textContent = task.task_name;
-
-    const liTanggal = document.createElement("p");
-    liTanggal.textContent = "Tanggal " + task.task_date
-
-    const liTask = document.createElement("p");
-    liTask.textContent = "Jenis Tugas = " + task.task_type
-
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Hapus'
-
-    deleteButton.addEventListener('click', function () {
-        deleteTask(taskId, liTugas, liTanggal, liTask, deleteButton)
-    })
-
-    daftar.appendChild(liTugas)
-    daftar.appendChild(liTanggal)
-    daftar.appendChild(liTask)
-    daftar.appendChild(deleteButton)
-}
-
-function deleteTask(taskId, liTugas, liTanggal, liTask, deleteButton) {
-    //simpan referensi elemen yang akan dihapus
-    const elementsToRemove = [liTugas, liTanggal, liTask, deleteButton];
-
-    //kirim request delete ke db    
-    fetch(`http://localhost:3000/api/task/${taskId
-        }`, { method: 'DELETE' })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-
-            elementsToRemove.forEach(element => element.remove())
-        })
-        .catch(error => {
-            // console.error('Error: ', error)
-            alert('Terjadi kesalahan saat menghapus data!')
-        })
-}
+})
 
 // untuk simpan data ke frontend dan db
 tombol.addEventListener("click", function () {
@@ -88,7 +80,8 @@ tombol.addEventListener("click", function () {
         .then(response => response.json())
         .then(data => {
             alert(data.message);
-            console.log(data)
+            newTaskId = data.id
+            // console.log(newTaskId)
         })
         .catch(error => {
             console.error('Error: ', error)
